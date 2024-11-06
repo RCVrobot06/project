@@ -11,7 +11,7 @@ from jetson_utils import (videoSource, videoOutput, saveImage,
 
 # 기본 설정
 input = videoSource("v4l2:///dev/video0")  # 카메라 입력
-output = videoOutput("display://0")  # 화면에 출력
+output = videoOutput("rtsp://localhost:8554/mystream")  # 화면에 출력
 
 net = detectNet("ssd-mobilenet-v2", threshold=0.5)
 
