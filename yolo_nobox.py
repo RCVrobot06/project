@@ -12,18 +12,8 @@ from jetson_utils import (videoSource, videoOutput, cudaToNumpy, cudaFromNumpy,
 # 기본 설정
 input = videoSource("v4l2:///dev/video0")  # 카메라 입력
 output = videoOutput("rtsp://localhost:8554/mystream")  # 화면에 출력
-output_dir = "output_edges"  # 객체별 에지 이미지를 저장할 폴더
-
-# 출력 폴더 생성
-if not os.path.exists(output_dir):
-    os.makedirs(output_dir)
-
 # YOLOv8 모델 로드
-yolo_model = YOLO("yolov8n.pt")
-
-# 객체 ID와 에지 저장 여부를 관리하는 딕셔너리
-saved_edges = {}
-# 각 객체별로 고유한 색을 사용하기 위한 딕셔너리
+yolo_model = YOLO("yolov8n.pt")# 각 객체별로 고유한 색을 사용하기 위한 딕셔너리
 color_map = {}
 
 while True:
@@ -91,16 +81,6 @@ while True:
             # 객체 이름 표시
             label = yolo_model.names[obj_id]
             cv2.putText(img_np, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
-
-            # 이전에 저장한 적이 없는 객체라면 에지 이미지를 저장
-            if obj_id not in saved_edges:
-                timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-                edge_filename = os.path.join(output_dir, f"object_{obj_id}_{timestamp}.jpg")
-                cv2.imwrite(edge_filename, roi)  # ROI로 잘라낸 에지 이미지를 저장
-
-                saved_edges[obj_id] = True  # 객체 ID를 기록하여 중복 저장 방지
-                print(f"Saved edge image: {edge_filename}")
-
     # Numpy 배열을 CUDA 메모리로 다시 변환 후 렌더링
     imgCuda = cudaFromNumpy(img_np)
     output.Render(imgCuda)
