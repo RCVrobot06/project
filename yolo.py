@@ -34,7 +34,7 @@ def get_next_color_value():
 def get_distinct_color():
     # 중간값을 사용하여 색상 값을 얻어옴
     hue = get_next_color_value()
-    r, g, b = colorsys.hsv_to_rgb(hue, 0.8, 0.)  # HSV 값을 RGB로 변환
+    r, g, b = colorsys.hsv_to_rgb(hue, 0.9, 0.9)  # HSV 값을 RGB로 변환
     return int(r * 255), int(g * 255), int(b * 255)
 
 prev_time = time.time()
